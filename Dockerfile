@@ -82,18 +82,8 @@ RUN pecl install xmlrpc-beta && docker-php-ext-enable xmlrpc \
     && pecl install amqp-beta && docker-php-ext-enable amqp \
     && pecl install xdebug \
     && pecl install memcached \
+    && pecl install imagick && docker-php-ext-enable imagick \
     && echo extension=memcached.so >> /usr/local/etc/php/conf.d/memcached.ini
-
-ARG IMAGICK_VERSION=3.8.0
-
-RUN curl -L -o /tmp/imagick.tar.gz https://github.com/Imagick/imagick/archive/refs/tags/${IMAGICK_VERSION}.tar.gz \
-    && tar --strip-components=1 -xf /tmp/imagick.tar.gz \
-    && phpize \
-    && ./configure \
-    && make \
-    && make install \
-    && echo "extension=imagick.so" > /usr/local/etc/php/conf.d/ext-imagick.ini \
-    && rm -rf /tmp/*
 
 RUN sed -i 's/pm\.max_children = [0-9]*/pm.max_children = 50/' /usr/local/etc/php-fpm.d/www.conf \
     && sed -i 's/pm\.start_servers = [0-9]*/pm.start_servers = 10/' /usr/local/etc/php-fpm.d/www.conf \
